@@ -11,7 +11,6 @@ cols = ["temperature", "humidity", "rain", "wind"]
 print("Data loaded:", df.shape[0], "hours")
 print("From", df["time"].min(), "to", df["time"].max())
 
-
 feature_cols = ["hour"] + [c + "_1h" for c in cols] + [c + "_24h" for c in cols] # Define User Input
 def make_features(data):
     data = data.copy()
@@ -53,8 +52,6 @@ for c in cols:
     error = (test_forecast[c] - real_part[c]).abs().mean()
     print(" ", c, ":", round(error, 2))        # End of this part.
 
-
-
 model = train_model(df)
 print("\n----- Weather Forecast -----")  # print a heading
 date_text = input("Enter date or date range (e.g. 12-10-2026  or  12-10-2026 to 15-10-2026): ")
@@ -62,3 +59,52 @@ time_text = input("Enter time or time range (e.g. 1 pm  or  2 to 5 am). Press En
 date_parts = date_text.lower().replace("from", "").split(" to ")
 start_date = pd.to_datetime(date_parts[0].strip(), dayfirst=True).normalize()
 end_date = pd.to_datetime(date_parts[-1].strip(), dayfirst=True).normalize()
+
+def read_hour(text, am_pm):
+    text = text.strip()
+    if "am" in text:
+        am_pm = "am"
+    if "pm" in text:
+        am_pm = "pm"
+    number = int(text.replace("am", "").replace("pm", "").strip())
+    if am_pm == "pm" and number != 12:
+        number = number + 12
+    if am_pm == "am" and number == 12:
+        number = 0
+    return number
+
+if time_text.strip() == "":
+    start_hour = 0
+    end_hour = 23
+else:
+    time_text = time_text.lower()
+    if "pm" in time_text:
+        am_pm = "pm"  # use pm
+    elif "am" in time_text:
+        am_pm = "am"
+    else:
+        am_pm = ""
+    time_parts = time_text.split(" to ")
+    start_hour = read_hour(time_parts[0], am_pm)
+    end_hour = read_hour(time_parts[-1], am_pm)
+
+
+last_time = df["time"].iloc[-1]
+end_time = end_date + pd.Timedelta(hours=23)
+df["source"] = "Real data"
+
+if end_time > last_time:
+    future = make_forecast(model, df, end_time)
+    future["source"] = "Predicted"
+    all_weather = pd.concat([df, future])
+else:
+    all_weather = df
+
+all_weather["date"] = all_weather["time"].dt.normalize()
+all_weather["hour"] = all_weather["time"].dt.hour
+result = all_weather[
+    (all_weather["date"] >= start_date)
+    & (all_weather["date"] <= end_date)
+    & (all_weather["hour"] >= start_hour)
+    & (all_weather["hour"] <= end_hour)
+]
