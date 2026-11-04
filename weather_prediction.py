@@ -108,3 +108,24 @@ result = all_weather[
     & (all_weather["hour"] >= start_hour)
     & (all_weather["hour"] <= end_hour)
 ]
+
+if result.shape[0] == 0:
+    print("\nNo data found for that date/time. Please try again.")
+else:  # if rows were found
+    for i in range(len(result)):
+        row = result.iloc[i]
+        day_text = row["time"].strftime("%A, %d %b %Y")
+        time_text = row["time"].strftime("%I:%M %p").lstrip("0")
+        wind_mph = row["wind"] * 0.621371
+
+        print("\nDhaka, Bangladesh")
+        print(day_text + ", " + time_text + "  (" + row["source"] + ")")
+        print(str(round(row["temperature"])) + " °C")
+        print("Rain:     " + str(round(row["rain"], 1)) + " mm")
+        print("Humidity: " + str(round(row["humidity"])) + "%")
+        print("Wind:     " + str(round(wind_mph)) + " mph")
+
+    if (end_date - last_time.normalize()).days > 7:
+        print("\nNote: forecasts more than 7 days ahead are less accurate.")
+    else:
+        print("-------------------------Thank you for using our service-------------------------")
