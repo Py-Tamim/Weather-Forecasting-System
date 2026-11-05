@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-
+import matplotlib.pyplot as plt
 
 df = pd.read_csv("weather_forcast.csv", skiprows=3)             # Load Datas/CSV Files
 df = df.dropna(axis=1, how="all")
@@ -129,3 +129,25 @@ else:  # if rows were found
         print("\nNote: forecasts more than 7 days ahead are less accurate.")
     else:
         print("-------------------------Thank you for using our service-------------------------")
+        
+if result.shape[0] > 0:                  #Graph Ploting
+    wind_mph = result["wind"] * 0.621371
+    plt.figure(figsize=(12, 8))
+    plt.subplot(2, 2, 1)
+    plt.plot(result["time"], result["temperature"], color="orange", marker="o")
+    plt.title("Temperature (°C)")
+    plt.xticks(rotation=45)
+    plt.subplot(2, 2, 2)
+    plt.plot(result["time"], result["humidity"], color="skyblue", marker="o")
+    plt.title("Humidity (%)")
+    plt.xticks(rotation=45)
+    plt.subplot(2, 2, 3)
+    plt.plot(result["time"], result["rain"], color="blue", marker="o")
+    plt.title("Rain (mm)")
+    plt.xticks(rotation=45)
+    plt.subplot(2, 2, 4)
+    plt.plot(result["time"], wind_mph, color="green", marker="o")
+    plt.title("Wind (mph)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()  # fix spacing between graphs
+    plt.show()
