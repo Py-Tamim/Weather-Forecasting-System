@@ -238,12 +238,4 @@ These charts help compare the predicted weather conditions across the selected h
 - Add interactive weather dashboards.
 - Include additional weather parameters.
 
-## Author
-
-**Fuad Tamim**
-
-GitHub: [Py-Tamim](https://github.com/Py-Tamim)
-
----
-
-*This project was developed as a practical machine learning project to explore weather forecasting, historical data analysis, model evaluation, and data visualization using Python.*
+* ## This project was developed as a practical machine learning project to explore weather forecasting, historical data analysis, model evaluation, and data visualization using Python.*
