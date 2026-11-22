@@ -2,41 +2,47 @@
 
 A Python-based weather forecasting project that uses **Machine Learning (Random Forest Regression)** to predict weather conditions in Dhaka, Bangladesh.
 
-The system can display historical weather data and generate future weather predictions based on user-selected dates and hours. It predicts temperature, humidity, rainfall, and wind speed, with an additional version that also predicts atmospheric pressure.
+The system analyzes historical weather data and generates weather predictions based on user-selected dates and hours. It predicts temperature, humidity, rainfall, and wind speed, with an additional version that also predicts atmospheric pressure.
+
+The project includes two different forecasting approaches, allowing me to explore how different input features and historical weather patterns affect prediction results.
 
 ## Project Overview
 
-This project contains two approaches to weather forecasting:
+This project contains two approaches to weather forecasting.
 
 ### Version 1: Date and Time-Based Forecasting
 
-The first version uses the hour of the day and day of the year as input features.
+The first version uses the hour of the day and day of the year as input features to predict weather conditions.
 
-- Uses Random Forest Regression.
+**Key features:**
+- Uses Random Forest Regression with 100 trees.
 - Predicts temperature, humidity, rainfall, atmospheric pressure, and wind speed.
-- Uses the last 30 days of available data to evaluate the model.
+- Uses the last 30 days of available data for model evaluation.
 - Supports individual dates and date ranges.
 - Supports individual hours, time ranges, and full-day forecasts.
-- Displays real and predicted weather separately.
-- Generates bar charts for weather conditions.
+- Displays historical and predicted weather separately.
+- Generates bar charts to visualize weather conditions.
 
 **Dataset:** `weather_forcast_1.csv`
 
 ### Version 2: Historical Weather-Based Forecasting
 
-The second version uses previous weather observations to predict future conditions.
+The second version uses previous weather observations to predict future weather conditions.
 
-It uses:
+The model uses three types of input features:
+
 - Current hour.
 - Weather values from 1 hour earlier.
 - Weather values from 24 hours earlier.
 
-The model uses these historical values to predict the next hour's weather. It then uses its own predictions to forecast subsequent hours.
+It learns the relationship between previous weather conditions and the next hour's weather. After predicting the next hour, it uses that prediction as part of the input for subsequent forecasts.
 
+**Key features:**
 - Uses Random Forest Regression with 100 trees.
 - Predicts temperature, humidity, rainfall, and wind speed.
 - Evaluates the model using the last 48 hours of available data.
-- Supports date and time selection.
+- Supports individual dates and date ranges.
+- Supports individual hours, time ranges, and full-day forecasts.
 - Displays historical and predicted weather separately.
 - Provides a warning when forecasting more than 7 days ahead.
 
@@ -62,7 +68,7 @@ The model uses these historical values to predict the next hour's weather. It th
 |---|---|
 | Python | Main programming language |
 | Pandas | Data loading and processing |
-| Scikit-learn | Machine learning model |
+| Scikit-learn | Machine learning implementation |
 | Random Forest Regressor | Weather prediction |
 | Matplotlib | Data visualization |
 | NumPy | Numerical operations |
@@ -82,17 +88,17 @@ Weather-Forecasting-System/
 └── requirements.txt
 ```
 
-*The filenames above are suggested. Update them to match your actual GitHub repository.*
+*Note: Update the filenames above if your actual Python scripts or dataset files have different names.*
 
-## Installation
+## Installation and Setup
 
 **1. Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/Weather-Forecasting-System.git
+git clone https://github.com/Py-Tamim/Weather-Forecasting-System.git
 ```
 
-**2. Open the project folder**
+**2. Navigate to the project directory**
 
 ```bash
 cd Weather-Forecasting-System
@@ -104,7 +110,7 @@ cd Weather-Forecasting-System
 pip install pandas scikit-learn matplotlib numpy
 ```
 
-Or install using the requirements file:
+Alternatively, install the dependencies using:
 
 ```bash
 pip install -r requirements.txt
@@ -112,77 +118,87 @@ pip install -r requirements.txt
 
 ## Dataset Requirements
 
-Both versions require hourly weather data in CSV format.
+Both versions use historical hourly weather data in CSV format.
 
-**Version 1**
+### Version 1 Dataset
 
-The CSV file should contain seven columns representing:
+The `weather_forcast_1.csv` file should contain seven columns in the following order:
 
 ```text
 date, clock, temperature, humidity, rain, pressure, wind
 ```
 
-The script renames the columns automatically, so the CSV column order must match.
+The script assigns these column names automatically, so the CSV column order must match.
 
-**Version 2**
+### Version 2 Dataset
 
-The CSV file should contain hourly weather observations with these five columns after skipping the first three metadata rows:
+The `weather_forcast.csv` file should contain hourly weather observations.
+
+The script skips the first three metadata rows and expects the remaining data to have these five columns:
 
 ```text
 time, temperature, humidity, rain, wind
 ```
 
-The second version removes completely empty columns and rows containing missing values.
+Completely empty columns and rows containing missing values are removed during data preprocessing.
 
 ## How to Run
 
-Run the first version:
+There are two separate Python scripts for the two forecasting approaches.
+
+**Run Version 1:**
 
 ```bash
 python weather_forecasting.py
 ```
 
-Run the second version:
+**Run Version 2:**
 
 ```bash
 python weather_forecasting_v2.py
 ```
 
-The program will ask for a date or date range and a time or time range.
+After running either script, the program asks the user to enter a date or date range and a time or time range.
 
-**Example input:**
+### Example Inputs
+
+**Single date:**
 
 ```text
-Enter date or date range:
 12-12-2026
-
-Enter time or time range:
-Press Enter for the full day
 ```
 
-You can also enter:
+**Date range:**
 
 ```text
 12-12-2026 to 15-12-2026
 ```
 
-Or specify a time:
+**Specific time:**
 
 ```text
 1 pm
 ```
 
-Or a time range:
+**Time range:**
 
 ```text
 2 am to 6 am
 ```
 
+**Full-day forecast:**
+
+Press Enter without entering a time.
+
+The system then displays the weather information for the requested dates and hours.
+
 ## Model Evaluation
 
-The second version was evaluated using the last 48 hours of available historical data.
+Both versions evaluate their forecasting performance using historical data that is excluded from the training process.
 
-**Sample evaluation results:**
+### Version 2 – Sample Evaluation Results
+
+The second version was tested using the last 48 hours of available historical weather data.
 
 | Weather Parameter | Average Absolute Error |
 |---|---:|
@@ -191,13 +207,17 @@ The second version was evaluated using the last 48 hours of available historical
 | Rainfall | 0.09 mm |
 | Wind Speed | 1.52 km/h |
 
-These values represent the average absolute difference between predicted and actual observations in the test period. Lower values indicate smaller prediction errors.
+The evaluation uses Mean Absolute Error (MAE), which measures the average absolute difference between predicted and actual values.
+
+A lower MAE indicates that the predictions are closer to the actual observations.
+
+*These are sample results from one dataset and may change when the dataset or training period changes.*
 
 ## Sample Forecast Output
 
-Example forecast for Dhaka, Bangladesh, on 12 December 2026:
+The following table shows selected predictions generated by Version 2 for Dhaka, Bangladesh, on 12 December 2026.
 
-| Time | Temperature | Rain | Humidity | Wind |
+| Time | Temperature | Rainfall | Humidity | Wind |
 |---|---:|---:|---:|---:|
 | 12:00 AM | 29 °C | 0.1 mm | 73% | 3 mph |
 | 6:00 AM | 28 °C | 0.1 mm | 79% | 3 mph |
@@ -206,36 +226,59 @@ Example forecast for Dhaka, Bangladesh, on 12 December 2026:
 | 6:00 PM | 32 °C | 0.1 mm | 60% | 4 mph |
 | 11:00 PM | 30 °C | 0.0 mm | 71% | 3 mph |
 
-<sub>Example values from a sample program run, not live weather observations.</sub>
+*These values are example predictions from a program run, not live weather observations.*
 
 ## Data Visualization
 
-Version 1 generates four bar charts to visualize:
+Version 1 generates four bar charts using Matplotlib to visualize the predicted weather conditions:
 
-- Temperature
-- Humidity
-- Rainfall
-- Wind Speed
+- Temperature (°C)
+- Humidity (%)
+- Rainfall (mm)
+- Wind Speed (mph)
 
-These charts help compare the predicted weather conditions across the selected hours.
+These visualizations make it easier to compare weather conditions across the selected dates and hours.
 
-## Important Notes and Limitations
+## AI Assistance and Acknowledgement
 
-- This project uses historical weather data and does not connect to a live weather API.
+During the development of this project, I used AI tools as a learning and development assistant.
+
+I took assistance from AI for:
+
+- Exploring and refining the initial project idea.
+- Finding suitable CSV weather datasets for the project.
+- Understanding different machine learning approaches for weather forecasting.
+- Comparing possible models and selecting Random Forest Regression as the model used in this project.
+- Understanding model evaluation, feature selection, and forecasting methods.
+- Troubleshooting coding issues and improving my understanding of the implementation.
+
+The project implementation, testing, code modifications, and evaluation were carried out as part of my own learning and development process. I used AI assistance to support my research and understanding rather than treating it as a replacement for learning and experimentation.
+
+## Limitations
+
+- The project uses historical weather data and does not connect to a live weather API.
 - Predictions are estimates based on patterns learned from the available dataset.
-- Version 1 uses hour and day-of-year features, so it does not directly learn from previous weather measurements.
-- Version 2 uses previous weather observations and recursive predictions. Prediction errors can accumulate over longer forecast periods.
+- Version 1 uses hour and day-of-year features and does not directly consider previous weather measurements.
+- Version 2 uses previous weather observations and recursive forecasting, so prediction errors may accumulate over longer forecast periods.
 - Forecasts more than 7 days ahead may be less accurate.
-- Model performance depends on the quality, quantity, and coverage of the training data.
-- The sample evaluation results may change when the dataset changes.
+- Model performance depends on the quality, quantity, and coverage of the historical dataset.
 
 ## Future Improvements
 
-- Integrate a live weather API.
-- Add more historical weather data.
-- Experiment with XGBoost, LSTM, and other forecasting models.
-- Improve long-term forecasting accuracy.
-- Add interactive weather dashboards.
+- Integrate a live weather API for real-time weather information.
+- Collect and use more historical weather data.
+- Experiment with other machine learning models, such as XGBoost.
+- Explore deep learning approaches such as LSTM.
+- Improve forecasting accuracy, especially for longer prediction periods.
+- Develop an interactive weather dashboard.
 - Include additional weather parameters.
 
-* ## This project was developed as a practical machine learning project to explore weather forecasting, historical data analysis, model evaluation, and data visualization using Python.*
+## Author
+
+**Fuad Tamim**
+
+GitHub: [Py-Tamim](https://github.com/Py-Tamim)
+
+---
+
+*This project was developed as a practical machine learning project to explore weather forecasting, historical data analysis, model evaluation, and data visualization using Python.*
